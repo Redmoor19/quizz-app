@@ -13,8 +13,8 @@ api.interceptors.response.use(
     }
   },
   (err) => {
-    console.log(err.message);
-    if (err) return err.message;
+    console.log(err);
+    if (err) throw err;
   }
 );
 

@@ -12,7 +12,7 @@ export function useFetch<T>(fetchFn: () => Promise<T>) {
         loading.value = false;
       })
       .catch((err) => {
-        error.value = err;
+        error.value = err.message;
         loading.value = false;
       });
   });

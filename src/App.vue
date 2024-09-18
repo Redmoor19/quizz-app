@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <main>
+  <main class="w-screen h-screen">
     <RouterView />
   </main>
 </template>
