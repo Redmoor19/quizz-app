@@ -25,6 +25,10 @@ const useQuizStore = defineStore("quiz", {
   }),
   getters: {
     currentQuestion: (state) => state.questions[state.activeQuestion],
+    correct: (state) =>
+      state.results.reduce((acc, curr) => (curr ? (acc += 1) : acc), 0),
+    incorrect: (state) =>
+      state.results.reduce((acc, curr) => (!curr ? (acc += 1) : acc), 0),
   },
   actions: {
     async fetchQuestions(params: { [key: string]: string }) {
@@ -50,6 +54,12 @@ const useQuizStore = defineStore("quiz", {
     },
     nextQuestion() {
       if (this.activeQuestion < this.totalQuestions) this.activeQuestion++;
+    },
+    finishGame() {
+      this.status = "finished";
+    },
+    reset() {
+      this.$reset();
     },
   },
 });

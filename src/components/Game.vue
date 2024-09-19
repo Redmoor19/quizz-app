@@ -7,11 +7,12 @@ import shuffleArray from "@/utils/shuffleArray";
 const { question } = defineProps<{
   question: Question;
   activeQuestion: number;
-  total: number;
+  over: boolean;
 }>();
 const emit = defineEmits<{
   (e: "answer", isCorrect: boolean): void;
   (e: "next"): void;
+  (e: "finish"): void;
 }>();
 
 const options = computed(() =>
@@ -47,7 +48,7 @@ function nextQuestion() {
 </script>
 <template>
   <div class="flex flex-col gap-7">
-    <h1 v-html="`(${activeQuestion}/${total}) ${question.question}`"></h1>
+    <p class="text-xl" v-html="question.question"></p>
     <div class="grid grid-cols-2 gap-5 justify-center items-center">
       <Button
         v-for="option in options"
@@ -59,6 +60,9 @@ function nextQuestion() {
       >
       </Button>
     </div>
-    <Button v-if="answer !== ''" @click="nextQuestion">Next question</Button>
+    <Button v-if="answer !== '' && !over" @click="nextQuestion"
+      >Next question</Button
+    >
+    <Button v-if="over" @click="$emit('finish')">Finish game</Button>
   </div>
 </template>
