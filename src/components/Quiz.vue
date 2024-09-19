@@ -43,7 +43,8 @@ const percent = 100 / store.totalQuestions;
           <div
             v-for="result in results"
             class="rounded-full"
-            :class="[result ? 'bg-green-500' : 'bg-red-500', `w-[${percent}%]`]"
+            :class="[result ? 'bg-green-500' : 'bg-red-500']"
+            :style="{ width: `${percent}%` }"
           ></div>
         </div>
         <p class="text-right text-2xl tracking-wide">
