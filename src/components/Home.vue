@@ -8,8 +8,12 @@ import { difficulty, type } from "../data";
 import Input from "./ui/input/Input.vue";
 import Button from "./ui/button/Button.vue";
 import CustomSelect from "./CustomSelect.vue";
+import useQuizStore from "@/store/quizStore";
+import { useRouter } from "vue-router";
 
 const { data, loading } = useFetch(getCategories);
+const store = useQuizStore();
+const router = useRouter();
 
 const categoryItems = computed(() =>
   data.value?.trivia_categories.map((item) => ({
@@ -19,37 +23,50 @@ const categoryItems = computed(() =>
 );
 
 const settings = ref<{
-  questions: number;
+  amount: number;
   category: string;
   difficulty: string;
   type: string;
 }>({
-  questions: 10,
+  amount: 10,
   category: "",
   difficulty: "",
   type: "",
 });
 
 watch(
-  () => settings.value.questions,
+  () => settings.value.amount,
   (value) => {
     if (typeof value !== "number" || value < 1) {
-      settings.value.questions = 1;
+      settings.value.amount = 1;
     }
     if (value > 50) {
-      settings.value.questions = 50;
+      settings.value.amount = 50;
     }
   }
 );
 
-function submitHandler() {
-  console.log(settings.value);
+async function submitHandler() {
+  const params = {
+    ...settings.value,
+    amount: settings.value.amount.toString(),
+  };
+  Object.keys(params).forEach((key) => {
+    const value = params[key as keyof typeof params];
+
+    if (value === "" || value === "empty") {
+      delete params[key as keyof typeof params];
+    }
+  });
+
+  const result = await store.fetchQuestions(params);
+  if (result) router.push("/quiz");
 }
 </script>
 <template>
   <section class="h-full flex justify-center items-center">
     <form @submit.prevent="submitHandler" class="w-1/3 flex flex-col gap-5">
-      <Input v-model.number="settings.questions" type="number" />
+      <Input v-model.number="settings.amount" type="number" />
       <CustomSelect
         title="category"
         v-if="categoryItems !== undefined"
